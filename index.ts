@@ -1,5 +1,14 @@
 import config from "./config.js";
 import { cutString } from "./utils.js";
+import fetch from 'node-fetch';
+
+const jikanurl = `https://api.jikan.moe/v3/user/${config.malUsername}/animelist/all?order_by=last_updated&sort=desc`;
+
+interface AnimeJson {
+    "title": string;
+    "watching_status": number;
+    "score": number;
+}
 
 async function check(func: Function) {
     if (!config.gistId || !config.githubToken || !config.malUsername) {
@@ -9,16 +18,14 @@ async function check(func: Function) {
 }
 
 async function getAnimeList() { 
-    const url = `https://api.jikan.moe/v3/user/${config.malUsername}/animelist/all?order_by=last_updated&sort=desc`;
-    const response = await fetch(url);
+    const response = await fetch(jikanurl);
     const json = await response.json();
-    const animeList = json.anime;
+    const animeList = json["anime"] as AnimeJson[];
     const slicedList = animeList.slice(0, 3);
     return slicedList;
 }
 
 async function parseAnimeList() {
-    console.log("here");
     const animeList = await getAnimeList();
     let fullTitle = "";
     animeList.forEach(anime => {
@@ -27,19 +34,19 @@ async function parseAnimeList() {
         const score = anime.score;
 
         let status = "None";
-        if (rawStatus == "1") {
+        if (rawStatus == 1) {
             status = "Watching";
         }
-        else if (rawStatus == "2") {
+        else if (rawStatus == 2) {
             status = "Completed";
         }
-        else if (rawStatus == "3") {
+        else if (rawStatus == 3) {
             status = "Put on Hold";
         }
-        else if (rawStatus == "4") {
+        else if (rawStatus == 4) {
             status = "Dropped";
         }
-        else if (rawStatus == "6") {
+        else if (rawStatus == 6) {
             status = "Plan to Watch";
         }
         fullTitle += `${status} ${title} - ${score}/10\n`;
