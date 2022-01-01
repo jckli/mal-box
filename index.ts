@@ -5,6 +5,7 @@ async function check(func: Function) {
     if (!config.gistId || !config.githubToken || !config.malUsername) {
         throw new Error("Please check your environment variables, as one or more of them are missing.");
     }
+    await func();
 }
 
 async function getAnimeList() { 
@@ -17,6 +18,7 @@ async function getAnimeList() {
 }
 
 async function parseAnimeList() {
+    console.log("here");
     const animeList = await getAnimeList();
     let fullTitle = "";
     animeList.forEach(anime => {
