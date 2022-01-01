@@ -1,5 +1,5 @@
-import config from "./config";
-import { intToString, cutString} from "./utils";
+import config from "./config.js";
+import { intToString, cutString} from "./utils.js";
 
 async function check(func: Function) {
     if (!config.gistId || !config.githubToken || !config.malUsername) {
