@@ -55,6 +55,7 @@ async function parseAnimeList() {
 
 async function updateGist() {
     const data = await parseAnimeList();
+    console.log(data);
     const response = await fetch(`https://api.github.com/gists/${config.gistId}`, {
         body: JSON.stringify(data),
         method: "POST",
