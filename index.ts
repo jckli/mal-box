@@ -1,5 +1,5 @@
 import config from "./config.js";
-import { intToString, cutString} from "./utils.js";
+import { cutString } from "./utils.js";
 
 async function check(func: Function) {
     if (!config.gistId || !config.githubToken || !config.malUsername) {
@@ -71,4 +71,6 @@ async function updateGist() {
     }
 }
 
-await check(updateGist);
+(async () => {
+    await check(updateGist);
+})();
