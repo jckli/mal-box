@@ -13,11 +13,11 @@ jobs:
       - name: "Install"
         run: npm install --save-dev
       - name: "Build"
-        run: npm build
+        run: npm run build
       - name: "Update gist"
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           GIST_ID: ${{ secrets.GIST_ID }}
           MAL_USERNAME: ${{ secrets.MAL_USERNAME }}
-        run: npm start
+        run: npm run start
         
