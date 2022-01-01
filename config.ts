@@ -1,5 +1,5 @@
 const config = {
-    githubToken: process.env.GITHUB_TOKEN,
+    githubToken: process.env.GH_TOKEN,
     gistId: process.env.GIST_ID,
     malUsername: process.env.MAL_USERNAME,
   };

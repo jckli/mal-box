@@ -16,7 +16,7 @@ jobs:
         run: npm build
       - name: "Update gist"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
           GIST_ID: ${{ secrets.GIST_ID }}
           MAL_USERNAME: ${{ secrets.MAL_USERNAME }}
         run: npm start
