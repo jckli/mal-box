@@ -7,22 +7,6 @@ async function check(func: Function) {
     }
 }
 
-async function updateGist() {
-    const data = await parseAnimeList();
-    const response = await fetch(`https://api.github.com/gists/${config.gistId}`, {
-        body: JSON.stringify(data),
-        method: "POST",
-        headers: {Authorization: `token ${config.githubToken}`, Accept: "application/json",},
-    });
-    const status = await response.status;
-    if (status != 200) {
-        throw new Error("Something went wrong while updating the Gist.");
-    }
-    else {
-        console.log("Gist updated successfully.");
-    }
-}
-
 async function getAnimeList() { 
     const url = `https://api.jikan.moe/v3/user/${config.malUsername}/animelist/all?order_by=last_updated&sort=desc`;
     const response = await fetch(url);
@@ -61,8 +45,28 @@ async function parseAnimeList() {
     return {
         description: "🌸 MyAnimeList Anime Activity 🌸",
         files: {
-            latest_videos: { content: fullTitle }
+            "🌸 MAL Anime Activity 🌸": {
+                filename: `🌸 MAL Anime Activity 🌸`,
+                content: { content: fullTitle }
+            }
         },
+    }
+}
+
+async function updateGist() {
+    const data = await parseAnimeList();
+    const response = await fetch(`https://api.github.com/gists/${config.gistId}`, {
+        body: JSON.stringify(data),
+        method: "POST",
+        headers: {Authorization: `token ${config.githubToken}`, Accept: "application/json",},
+    });
+    const status = await response.status;
+    console.log(status);
+    if (status != 200) {
+        throw new Error("Something went wrong while updating the Gist.");
+    }
+    else {
+        console.log("Gist updated successfully.");
     }
 }
 
