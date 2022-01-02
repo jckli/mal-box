@@ -7,31 +7,48 @@ const octokit = new Octokit({
     auth: `token ${config.githubToken}`,
   });  
 
+/** Maybe instead of score, do episodes watched/chapters read */
 interface AnimeJson {
     "title": string;
     "watching_status": number;
     "score": number;
 }
+interface MangaJson {
+    "title": string;
+    "reading_status": number;
+    "score": number;
+}
 
 async function check(func: Function) {
-    if (!config.gistId || !config.githubToken || !config.malUsername) {
+    if (!config.gistId || !config.githubToken || !config.malUsername || !config.mode) {
         throw new Error("Please check your environment variables, as one or more of them are missing.");
+    }
+    if (!((config.mode == "anime") || (config.mode == "manga"))) {
+        throw new Error("Check the MAL_MODE environmental variable. It should be set to either exactly 'anime' or exactly 'manga'.");
     }
     await func();
 }
 
-async function getAnimeList() { 
-    const jikanurl = `https://api.jikan.moe/v3/user/${config.malUsername}/animelist/all?order_by=last_updated&sort=desc`;
+async function getList() { 
+    const jikanurl = `https://api.jikan.moe/v3/user/${config.malUsername}/${config.mode}list/all?order_by=last_updated&sort=desc`;
     const response = await fetch(jikanurl);
     const data = await response.json();
     const json = await JSON.parse(JSON.stringify(data));
-    const animeList = json.anime as AnimeJson[];
-    const slicedList = animeList.slice(0, 5);
-    return slicedList;
+    if (config.mode == "anime") {
+        const animeList = json.anime as AnimeJson[];
+        const slicedList = animeList.slice(0, 5);
+        return slicedList;
+    } else if (config.mode == "manga") {
+        const mangaList = json.manga as MangaJson[];
+        const slicedList = mangaList.slice(0, 5);
+        return slicedList;
+    } else {
+        throw new Error("Something went wrong. Check your MAL_MODE environment variable.");
+    }
 }
 
 async function parseAnimeList() {
-    const animeList = await getAnimeList();
+    const animeList = await getList();
     let fullTitle = "";
     animeList.forEach(anime => {
         const rawStatus = anime.watching_status;
@@ -71,8 +88,59 @@ async function parseAnimeList() {
     return fullTitle
 }
 
+async function parseMangaList() {
+    const mangaList = await getList();
+    let fullTitle = "";
+    mangaList.forEach(manga => {
+        const rawStatus = manga.reading_status;
+        const rawScore = manga.score;
+        let status = "None";
+        let cutAt = 0;
+        if (rawStatus == 1) {
+            status = "Reading";
+            cutAt = 44;
+        }
+        else if (rawStatus == 2) {
+            status = "Completed";
+            cutAt = 42;
+        }
+        else if (rawStatus == 3) {
+            status = "Put on Hold";
+            cutAt = 40;
+        }
+        else if (rawStatus == 4) {
+            status = "Dropped";
+            cutAt = 44;
+        }
+        else if (rawStatus == 6) {
+            status = "Planning to Read";
+            cutAt = 35;
+        }
+        let score;
+        if (rawScore == 0) {
+            score = "Unrated";
+            cutAt = cutAt - 3;
+        } else {
+            score =`${rawScore}/10`;
+        }
+        const title = cutString(manga.title, cutAt);
+        fullTitle += `${status} ${title} - ${score}\n`;
+    });
+    return fullTitle
+}
+
 async function updateGist() {
-    const data = await parseAnimeList();
+    let data;
+    let name;
+    if (config.mode == "anime") {
+        data = await parseAnimeList();
+        name = "Anime";
+    } else if (config.mode == "manga") {
+        data = await parseMangaList();
+        name = "Manga";
+    } else {
+        throw new Error("Something went wrong. Check your MAL_MODE environment variable.");
+    }
 
     let gist
     try {
@@ -87,10 +155,11 @@ async function updateGist() {
         const filename = Object.keys(gist.data.files)[0]
         await octokit.gists.update({
             gist_id: config.gistId,
-            description: "🌸 MyAnimeList Anime Activity 🌸",
+            description: `🌸 MyAnimeList ${name} Activity 🌸`,
+            public: true,
             files: {
                 [filename]: {
-                    filename: `Powered by mal-box - Anime List`,
+                    filename: `${name} List - Powered by Mal-Box`,
                     content: data
                 }
             }
