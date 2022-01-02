@@ -19,5 +19,6 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           GIST_ID: ${{ secrets.GIST_ID }}
           MAL_USERNAME: ${{ secrets.MAL_USERNAME }}
+          MAL_MODE: ${{ secrets.MAL_MODE }}
         run: npm run start
         
