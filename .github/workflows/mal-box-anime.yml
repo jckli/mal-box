@@ -1,5 +1,6 @@
 name: mal-box-anime
 on:
+  workflow_dispatch:
   schedule:
     - cron: "*/30 * * * *"
   push:

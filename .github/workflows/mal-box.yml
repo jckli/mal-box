@@ -7,7 +7,6 @@ on:
 jobs:
   updateGist:
     runs-on: ubuntu-latest
-    environment: anime
     steps:
       - name: "Checkout"
         uses: actions/checkout@master

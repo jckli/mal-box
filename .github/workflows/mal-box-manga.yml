@@ -1,5 +1,6 @@
 name: mal-box-manga
 on:
+  workflow_dispatch:
   schedule:
     - cron: "*/30 * * * *"
   push:
