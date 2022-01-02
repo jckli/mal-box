@@ -1,4 +1,4 @@
-name: mal-box-default
+name: mal-box-manga
 on:
   schedule:
     - cron: "*/30 * * * *"
@@ -7,7 +7,7 @@ on:
 jobs:
   updateGist:
     runs-on: ubuntu-latest
-    environment: anime
+    environment: manga
     steps:
       - name: "Checkout"
         uses: actions/checkout@master
