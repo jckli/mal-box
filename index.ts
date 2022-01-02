@@ -57,30 +57,30 @@ async function parseAnimeList() {
         let cutAt = 0;
         if (rawStatus == 1) {
             status = "Watching";
-            cutAt = 43;
+            cutAt = 40;
         }
         else if (rawStatus == 2) {
             status = "Completed";
-            cutAt = 42;
+            cutAt = 39;
         }
         else if (rawStatus == 3) {
             status = "Put on Hold";
-            cutAt = 40;
+            cutAt = 37;
         }
         else if (rawStatus == 4) {
             status = "Dropped";
-            cutAt = 44;
+            cutAt = 41;
         }
         else if (rawStatus == 6) {
             status = "Planning to Watch";
-            cutAt = 34;
+            cutAt = 31;
         }
         let score;
         if (rawScore == 0) {
             score = "Unrated";
-            cutAt = cutAt - 3;
+            cutAt = cutAt;
         } else {
-            score =`${rawScore}/10`;
+            score =`⭐${rawScore}/10`;
         }
         const title = cutString(anime.title, cutAt);
         fullTitle += `${status} ${title} - ${score}\n`;
@@ -98,30 +98,30 @@ async function parseMangaList() {
         let cutAt = 0;
         if (rawStatus == 1) {
             status = "Reading";
-            cutAt = 44;
+            cutAt = 41;
         }
         else if (rawStatus == 2) {
             status = "Completed";
-            cutAt = 42;
+            cutAt = 39;
         }
         else if (rawStatus == 3) {
             status = "Put on Hold";
-            cutAt = 40;
+            cutAt = 37;
         }
         else if (rawStatus == 4) {
             status = "Dropped";
-            cutAt = 44;
+            cutAt = 41;
         }
         else if (rawStatus == 6) {
             status = "Planning to Read";
-            cutAt = 35;
+            cutAt = 32;
         }
         let score;
         if (rawScore == 0) {
             score = "Unrated";
-            cutAt = cutAt - 3;
+            cutAt = cutAt;
         } else {
-            score =`${rawScore}/10`;
+            score =`⭐${rawScore}/10`;
         }
         const title = cutString(manga.title, cutAt);
         fullTitle += `${status} ${title} - ${score}\n`;
