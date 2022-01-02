@@ -35,7 +35,7 @@ async function parseAnimeList() {
     let fullTitle = "";
     animeList.forEach(anime => {
         const rawStatus = anime.watching_status;
-        const score = anime.score;
+        const rawScore = anime.score;
         let status = "None";
         let cutAt = 0;
         if (rawStatus == 1) {
@@ -58,8 +58,15 @@ async function parseAnimeList() {
             status = "Planning to Watch";
             cutAt = 34;
         }
+        let score;
+        if (rawScore == 0) {
+            score = "Unrated";
+            cutAt = cutAt - 3;
+        } else {
+            score =`${rawScore}/10`;
+        }
         const title = cutString(anime.title, cutAt);
-        fullTitle += `${status} ${title} - ${score}/10\n`;
+        fullTitle += `${status} ${title} - ${score}\n`;
     });
     return fullTitle
 }
@@ -83,7 +90,7 @@ async function updateGist() {
             description: "🌸 MyAnimeList Anime Activity 🌸",
             files: {
                 [filename]: {
-                    filename: `Powered by mal-box`,
+                    filename: `Powered by mal-box - Anime List`,
                     content: data
                 }
             }
