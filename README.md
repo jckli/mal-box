@@ -1,5 +1,6 @@
 <p align="center">
-  <img width="500" src="./image/example.png">
+  <img width="350" src="./image/exampleanime.png">
+  <img width="350" src="./image/examplemanga.png">
   <h3 align="center">MAL-Box</h3>
   <p align="center">Pinnable GitHub Gist with your latest Activity from MyAnimeList</p>
 </p>
