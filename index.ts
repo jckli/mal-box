@@ -85,6 +85,7 @@ async function parseAnimeList() {
         const title = cutString(anime.title, cutAt);
         fullTitle += `${status} ${title} - ${score}\n`;
     });
+    console.log(fullTitle);
     return fullTitle
 }
 
@@ -126,6 +127,7 @@ async function parseMangaList() {
         const title = cutString(manga.title, cutAt);
         fullTitle += `${status} ${title} - ${score}\n`;
     });
+    console.log(fullTitle);
     return fullTitle
 }
 
