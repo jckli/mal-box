@@ -26,7 +26,7 @@ async function getAnimeList() {
     const data = await response.json();
     const json = await JSON.parse(JSON.stringify(data));
     const animeList = json.anime as AnimeJson[];
-    const slicedList = animeList.slice(0, 3);
+    const slicedList = animeList.slice(0, 5);
     return slicedList;
 }
 
@@ -35,25 +35,30 @@ async function parseAnimeList() {
     let fullTitle = "";
     animeList.forEach(anime => {
         const rawStatus = anime.watching_status;
-        const title = cutString(anime.title, 30);
         const score = anime.score;
-
         let status = "None";
+        let cutAt = 0;
         if (rawStatus == 1) {
             status = "Watching";
+            cutAt = 43;
         }
         else if (rawStatus == 2) {
             status = "Completed";
+            cutAt = 42;
         }
         else if (rawStatus == 3) {
             status = "Put on Hold";
+            cutAt = 40;
         }
         else if (rawStatus == 4) {
             status = "Dropped";
+            cutAt = 44;
         }
         else if (rawStatus == 6) {
             status = "Planning to Watch";
+            cutAt = 34;
         }
+        const title = cutString(anime.title, cutAt);
         fullTitle += `${status} ${title} - ${score}/10\n`;
     });
     return fullTitle
@@ -73,13 +78,12 @@ async function updateGist() {
 
     try {
         const filename = Object.keys(gist.data.files)[0]
-        console.log(filename)
         await octokit.gists.update({
             gist_id: config.gistId,
             description: "🌸 MyAnimeList Anime Activity 🌸",
             files: {
                 [filename]: {
-                    filename: `🌸 MAL Anime Activity 🌸`,
+                    filename: `Powered by mal-box`,
                     content: data
                 }
             }
