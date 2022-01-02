@@ -23,8 +23,9 @@ async function check(func: Function) {
 async function getAnimeList() { 
     const jikanurl = `https://api.jikan.moe/v3/user/${config.malUsername}/animelist/all?order_by=last_updated&sort=desc`;
     const response = await fetch(jikanurl);
-    const json = await response.json();
-    const animeList = json["anime"] as AnimeJson[];
+    const data = await response.json();
+    const json = await JSON.parse(JSON.stringify(data));
+    const animeList = json.anime as AnimeJson[];
     const slicedList = animeList.slice(0, 3);
     return slicedList;
 }
@@ -51,12 +52,17 @@ async function parseAnimeList() {
             status = "Dropped";
         }
         else if (rawStatus == 6) {
-            status = "Plan to Watch";
+            status = "Planning to Watch";
         }
         fullTitle += `${status} ${title} - ${score}/10\n`;
     });
-    console.log(fullTitle);
-    let gist = [];
+    return fullTitle
+}
+
+async function updateGist() {
+    const data = await parseAnimeList();
+
+    let gist
     try {
         gist = await octokit.gists.get({
             gist_id: config.gistId
@@ -64,37 +70,22 @@ async function parseAnimeList() {
     } catch (error) {
         console.error(`There was a problem getting your Gist: ${error}`);
     }
+
     try {
-        const filename = Object.keys(gist["data"]["files"])[0]
+        const filename = Object.keys(gist.data.files)[0]
+        console.log(filename)
         await octokit.gists.update({
             gist_id: config.gistId,
             description: "🌸 MyAnimeList Anime Activity 🌸",
             files: {
-                "Made by mal-box": {
+                [filename]: {
                     filename: `🌸 MAL Anime Activity 🌸`,
-                    content: { content: fullTitle }
+                    content: data
                 }
             }
         });
     } catch (error) {
         console.error(`Unable to update gist: ${error}`)
-    }
-}
-
-async function updateGist() {
-    const data = await parseAnimeList();
-    const response = await fetch(`https://api.github.com/gists/${config.gistId}`, {
-        body: JSON.stringify(data),
-        method: "POST",
-        headers: {Authorization: `token ${config.githubToken}`, Accept: "application/json",},
-    });
-    const status = await response.status;
-    console.log(status);
-    if (status != 200) {
-        throw new Error("Something went wrong while updating the Gist.");
-    }
-    else {
-        console.log("Gist updated successfully.");
     }
 }
 
