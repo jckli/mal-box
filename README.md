@@ -1,7 +1,7 @@
 <p align="center">
   <img width="500" src="./image/example.png">
   <h3 align="center">MAL-Box</h3>
-  <p align="center">Pinnable GitHub Gist with your latest</p>
+  <p align="center">Pinnable GitHub Gist with your latest Activity from MyAnimeList</p>
 </p>
 
 ***
