@@ -1,7 +1,7 @@
 name: mal-box
 on:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "*/30 * * * *"
   push:
     branches: master
 jobs:
