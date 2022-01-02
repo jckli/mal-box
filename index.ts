@@ -1,8 +1,11 @@
 import config from "./config.js";
 import { cutString } from "./utils.js";
 import fetch from 'node-fetch';
+import { Octokit } from '@octokit/rest';
 
-const jikanurl = `https://api.jikan.moe/v3/user/${config.malUsername}/animelist/all?order_by=last_updated&sort=desc`;
+const octokit = new Octokit({
+    auth: `token ${config.githubToken}`,
+  });  
 
 interface AnimeJson {
     "title": string;
@@ -18,6 +21,7 @@ async function check(func: Function) {
 }
 
 async function getAnimeList() { 
+    const jikanurl = `https://api.jikan.moe/v3/user/${config.malUsername}/animelist/all?order_by=last_updated&sort=desc`;
     const response = await fetch(jikanurl);
     const json = await response.json();
     const animeList = json["anime"] as AnimeJson[];
@@ -51,20 +55,34 @@ async function parseAnimeList() {
         }
         fullTitle += `${status} ${title} - ${score}/10\n`;
     });
-    return {
-        description: "🌸 MyAnimeList Anime Activity 🌸",
-        files: {
-            "🌸 MAL Anime Activity 🌸": {
-                filename: `🌸 MAL Anime Activity 🌸`,
-                content: { content: fullTitle }
+    console.log(fullTitle);
+    let gist = [];
+    try {
+        gist = await octokit.gists.get({
+            gist_id: config.gistId
+        });
+    } catch (error) {
+        console.error(`There was a problem getting your Gist: ${error}`);
+    }
+    try {
+        const filename = Object.keys(gist["data"]["files"])[0]
+        await octokit.gists.update({
+            gist_id: config.gistId,
+            description: "🌸 MyAnimeList Anime Activity 🌸",
+            files: {
+                "Made by mal-box": {
+                    filename: `🌸 MAL Anime Activity 🌸`,
+                    content: { content: fullTitle }
+                }
             }
-        },
+        });
+    } catch (error) {
+        console.error(`Unable to update gist: ${error}`)
     }
 }
 
 async function updateGist() {
     const data = await parseAnimeList();
-    console.log(data);
     const response = await fetch(`https://api.github.com/gists/${config.gistId}`, {
         body: JSON.stringify(data),
         method: "POST",
