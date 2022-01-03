@@ -30,16 +30,17 @@ async function check(func: Function) {
 }
 
 async function getList() { 
-    const jikanurl = `https://api.jikan.moe/v3/user/${config.malUsername}/${config.mode}list/all?order_by=last_updated&sort=desc`;
+    const jikanurl = `https://api.jikan.moe/v4/users/${config.malUsername}/${config.mode}list/all?order_by=last_updated&sort=desc`
+    /**const jikanurl = `https://api.jikan.moe/v3/user/${config.malUsername}/${config.mode}list/all?order_by=last_updated&sort=desc`; */
     const response = await fetch(jikanurl);
     const data = await response.json();
     const json = await JSON.parse(JSON.stringify(data));
     if (config.mode == "anime") {
-        const animeList = json.anime as AnimeJson[];
+        const animeList = json.data as AnimeJson[];
         const slicedList = animeList.slice(0, 5);
         return slicedList;
     } else if (config.mode == "manga") {
-        const mangaList = json.manga as MangaJson[];
+        const mangaList = json.data as MangaJson[];
         const slicedList = mangaList.slice(0, 5);
         return slicedList;
     } else {
@@ -82,7 +83,7 @@ async function parseAnimeList() {
         } else {
             score =`⭐${rawScore}/10`;
         }
-        const title = cutString(anime.title, cutAt);
+        const title = cutString(anime.anime.title, cutAt);
         fullTitle += `${status} ${title} - ${score}\n`;
     });
     console.log(fullTitle);
@@ -124,7 +125,7 @@ async function parseMangaList() {
         } else {
             score =`⭐${rawScore}/10`;
         }
-        const title = cutString(manga.title, cutAt);
+        const title = cutString(manga.manga.title, cutAt);
         fullTitle += `${status} ${title} - ${score}\n`;
     });
     console.log(fullTitle);
