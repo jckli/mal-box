@@ -91,7 +91,7 @@ async function parseAnimeList() {
         let scoreCut;
         if (rawScore == 0) {
             score = "- Unrated";
-            scoreCut = score.length + 1;
+            scoreCut = score.length;
         } else {
             score =`- ⭐${rawScore}/10`;
             scoreCut = score.length + 2;
