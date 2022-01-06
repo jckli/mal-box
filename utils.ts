@@ -9,3 +9,7 @@ export function cutString(str: string, len: number) {
         return str;
     }
 }
+
+export function removeExtraSpaces(str: string) {
+    return str.replace(/ {2,}/g, ' ');
+}
