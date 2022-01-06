@@ -10,13 +10,11 @@ const octokit = new Octokit({
 /** Maybe instead of score, do episodes watched/chapters read */
 interface AnimeJson {
     "title": string;
-    "episode": number;
     "watching_status": number;
     "score": number;
 }
 interface MangaJson {
     "title": string;
-    "chapter": number;
     "reading_status": number;
     "score": number;
 }
@@ -109,39 +107,51 @@ async function parseMangaList() {
     const mangaList = await getList();
     let fullTitle = "";
     mangaList.forEach(manga => {
+        const baseLength = 59;
         const rawStatus = manga.reading_status;
         const rawScore = manga.score;
+        let chapter = `ch.${manga.chapters_read}`;
         let status = "None";
         let cutAt = 0;
         if (rawStatus == 1) {
-            status = "Reading";
-            cutAt = 41;
+            if (chapter == "ch.0") {
+                chapter = "";
+                status = `Started`;
+            } else {
+                status = "Reading";
+            }
+            cutAt = baseLength - status.length - 1;
         }
         else if (rawStatus == 2) {
             status = "Completed";
-            cutAt = 39;
+            chapter = "";
+            cutAt = baseLength - status.length - 1;
         }
         else if (rawStatus == 3) {
             status = "Put on Hold";
-            cutAt = 37;
+            cutAt = baseLength - status.length - 1;
         }
         else if (rawStatus == 4) {
             status = "Dropped";
-            cutAt = 41;
+            cutAt = baseLength - status.length - 1;
         }
         else if (rawStatus == 6) {
             status = "Planning to Read";
-            cutAt = 32;
+            chapter = "";
+            cutAt = baseLength - status.length - 1;
         }
         let score;
+        let scoreCut;
         if (rawScore == 0) {
-            score = "Unrated";
-            cutAt = cutAt;
+            score = "- Unrated";
+            scoreCut = score.length;
         } else {
-            score =`⭐${rawScore}/10`;
+            score =`- ⭐${rawScore}/10`;
+            scoreCut = score.length + 2;
         }
+        cutAt = cutAt - chapter.length - scoreCut - 1;
         const title = cutString(manga.manga.title, cutAt);
-        fullTitle += `${status} ${title} - ${score}\n`;
+        fullTitle += removeExtraSpaces(`${status} ${chapter} ${title} ${score}\n`);
     });
     console.log(fullTitle);
     return fullTitle
