@@ -63,7 +63,7 @@ async function parseAnimeList() {
                 episode = "";
                 status = `Started`;
             } else {
-                status = `Watching`;
+                status = `Watched`;
             }
             cutAt = baseLength - status.length - 1;
         }
@@ -118,7 +118,7 @@ async function parseMangaList() {
                 chapter = "";
                 status = `Started`;
             } else {
-                status = "Reading";
+                status = "Read";
             }
             cutAt = baseLength - status.length - 1;
         }
