@@ -90,6 +90,9 @@ async function parseAnimeList() {
         if (rawScore == 0) {
             score = "- Unrated";
             scoreCut = score.length;
+        } else if (rawScore == 10) {
+            score = `- ⭐${rawScore}/10`;
+            scoreCut = score.length + 3;
         } else {
             score =`- ⭐${rawScore}/10`;
             scoreCut = score.length + 2;
@@ -145,6 +148,9 @@ async function parseMangaList() {
         if (rawScore == 0) {
             score = "- Unrated";
             scoreCut = score.length;
+        } else if (rawScore == 10) {
+            score = `- ⭐${rawScore}/10`;
+            scoreCut = score.length + 3;
         } else {
             score =`- ⭐${rawScore}/10`;
             scoreCut = score.length + 2;
