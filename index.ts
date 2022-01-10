@@ -87,9 +87,13 @@ async function parseAnimeList() {
         }
         let score;
         let scoreCut;
+        let episodeCut = episode.length;
         if (rawScore == 0) {
             score = "- Unrated";
             scoreCut = score.length;
+            if (status == "Watched") {
+                episodeCut += 1;
+            }
         } else if (rawScore == 10) {
             score = `- ⭐${rawScore}/10`;
             scoreCut = score.length + 3;
@@ -97,8 +101,7 @@ async function parseAnimeList() {
             score =`- ⭐${rawScore}/10`;
             scoreCut = score.length + 2;
         }
-        console.log(score.length);
-        cutAt = cutAt - episode.length - scoreCut - 1;
+        cutAt = cutAt - episodeCut - scoreCut - 1;
         const title = cutString(anime.anime.title, cutAt);
         fullTitle += removeExtraSpaces(`${status} ${episode} ${title} ${score}\n`);
     });
@@ -145,9 +148,13 @@ async function parseMangaList() {
         }
         let score;
         let scoreCut;
+        let chapterCut = chapter.length;
         if (rawScore == 0) {
             score = "- Unrated";
             scoreCut = score.length;
+            if (status == "Read") {
+                chapterCut += 1;
+            }
         } else if (rawScore == 10) {
             score = `- ⭐${rawScore}/10`;
             scoreCut = score.length + 3;
@@ -155,7 +162,7 @@ async function parseMangaList() {
             score =`- ⭐${rawScore}/10`;
             scoreCut = score.length + 2;
         }
-        cutAt = cutAt - chapter.length - scoreCut - 1;
+        cutAt = cutAt - chapterCut - scoreCut - 1;
         const title = cutString(manga.manga.title, cutAt);
         fullTitle += removeExtraSpaces(`${status} ${chapter} ${title} ${score}\n`);
     });
