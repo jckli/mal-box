@@ -96,10 +96,10 @@ async function parseAnimeList() {
             }
         } else if (rawScore == 10) {
             score = `- ⭐${rawScore}/10`;
-            scoreCut = score.length + 3;
+            scoreCut = score.length + 2;
         } else {
             score =`- ⭐${rawScore}/10`;
-            scoreCut = score.length + 2;
+            scoreCut = score.length + 1;
         }
         cutAt = cutAt - episodeCut - scoreCut - 1;
         const title = cutString(anime.anime.title, cutAt);
@@ -157,10 +157,10 @@ async function parseMangaList() {
             }
         } else if (rawScore == 10) {
             score = `- ⭐${rawScore}/10`;
-            scoreCut = score.length + 3;
+            scoreCut = score.length + 2;
         } else {
             score =`- ⭐${rawScore}/10`;
-            scoreCut = score.length + 2;
+            scoreCut = score.length + 1;
         }
         cutAt = cutAt - chapterCut - scoreCut - 1;
         const title = cutString(manga.manga.title, cutAt);
