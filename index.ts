@@ -101,6 +101,7 @@ async function parseAnimeList() {
             score =`- ⭐${rawScore}/10`;
             scoreCut = score.length + 1;
         }
+        scoreCut += 2;
         cutAt = cutAt - episodeCut - scoreCut - 1;
         const title = cutString(anime.anime.title, cutAt);
         fullTitle += removeExtraSpaces(`${status} ${episode} ${title} ${score}\n`);
@@ -162,6 +163,7 @@ async function parseMangaList() {
             score =`- ⭐${rawScore}/10`;
             scoreCut = score.length + 1;
         }
+        scoreCut += 2;
         cutAt = cutAt - chapterCut - scoreCut - 1;
         const title = cutString(manga.manga.title, cutAt);
         fullTitle += removeExtraSpaces(`${status} ${chapter} ${title} ${score}\n`);
